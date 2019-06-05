@@ -178,7 +178,7 @@ emit is not a reserved word and can be anything meaningful eg. addToOutput
 
 * Emitting Key/Value pairs
 Apache beam's java SDK has a KV type.
-As far as I understand, in go and python KV pairs are simply pairs of values.
+From the Go SDK design docs, KV pairs are implicit and are just pairs of values.
 
 .code cmd/keyval/main.go /10/,/20/ 
 
