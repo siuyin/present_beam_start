@@ -315,6 +315,20 @@ input:
 
 .code /testdata/marchToMay.csv
 
+* One last thing. Out of order data presentation.
+
+.code testdata/marchToMayRandom.csv
+
+How does this data affect the results?
+
+  cd cmd/avgrandom
+  go run main.go
+  cat report.txt
+
+report.txt:
+
+.code cmd/avgrandom/report.txt
+
 
 * Code and presentation download
 

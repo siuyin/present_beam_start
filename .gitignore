@@ -1,6 +1,7 @@
 *.swp
 *secret*
 **/avg/avg
+**/avgrandom/avgrandom
 **/clean/clean
 **/evttime/evttime
 **/group/group
