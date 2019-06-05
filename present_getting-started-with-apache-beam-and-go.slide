@@ -240,7 +240,7 @@ output.csv:
 
 .code cmd/latest/output.csv
 
-* Stream Processing
+* Windowing functions
 
 * Event Time v. Processing Time
 
