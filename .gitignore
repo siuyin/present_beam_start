@@ -1,0 +1,10 @@
+*.swp
+*secret*
+**/avg/avg
+**/clean/clean
+**/evttime/evttime
+**/group/group
+**/hello/hello
+**/keyval/keyval
+**/latest/latest
+

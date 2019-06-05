@@ -1,0 +1,8 @@
+A simple inventory report,,,
+report date,2019-12-25,,
+TimeStamp,ID,Description,Qty
+2019-03-15T12:34:56,ABC123456,Brown Foxes,23
+2019-03-15T12:34:57,DEF654321,Lazy Dogs,45
+2019-03-15T12:34:58,IJK456123,Newt’s Eyes,12
+2019-03-15T12:34:59,XYZ789456,"Wag, O’noggin",34
+2019-03-16T12:34:56,ABC123456,Brown Foxes,22

@@ -1,0 +1,313 @@
+Getting Started with Apache Beam
+and Go
+5 Jun 2019
+
+Loh Siu Yin
+Technology Consultant, Beyond Broadcast LLP
+siuyin@beyondbroadcast.com
+
+* Apache Beam
+
+- A distributed data processing language (runs on one or more workers).
+- The same code can be used for batch or stream processing.
+- Runs on multiple targets: direct (local), apex, dataflow, gearpump, flink, samza, spark
+- java, scala, python and go SDKs 
+
+* Why Go as a data processing language?
+python:
+
+  Python 3.6.7 (default, Oct 22 2018, 11:32:17) 
+  [GCC 8.2.0] on linux
+  Type "help", "copyright", "credits" or "license" for more information.
+  >>> s="a"
+  >>> print(s)
+  a
+  >>> s=1
+  >>> print(s)
+  1
+
+java:
+
+  PCollection<KV<String, String>> userAddress = pipeline.apply(JdbcIO.<KV<String, String>>read()...);
+
+
+Go:
+
+  userAddress := jdbcio.Read(...)
+
+* Data exploration v. Data engineering
+
+- python is great for exploration, experimentation. Jupyter (iPython) notebooks are the best for documenting findings!
+
+Dynamic or duck-typing is good here as it does not get in the way. You get to see results interactively.
+
+- Engineering is needed when people are added and time passes. Quick fixes and band-aids usually cannot stand the test of time and become incomprehensible to people new to the work.
+
+Static typing is good here as the compiler can perform checks that correct types are passed around.
+
+- Go was designed as an pragmatic, easy to read, concise, statically typed language to address software engineering issues faced by Google.
+
+* Go setup
+
+The Beam SDK for Go requires go version 1.10 or newer.
+Check with:
+
+  go version
+
+Get the go SDK:
+
+  go get -u github.com/apache/beam/sdks/go/...
+
+* The following examples will use the direct runner.
+
+* Hello Beam
+
+.code cmd/hello/main.go
+
+* Beam access to local filesystem
+
+.code cmd/hello/main.go /10/,/20/
+
+1. Note the filesystem import is needed as a side-effect, hence the _
+
+In addition to the local filesystem, beam can read/write to an in-memory filesystem, Google Cloud Storage and Google Big Query.
+
+* Beam Input / Output
+
+.code cmd/hello/main.go /30/,/40/
+
+2. Initialize a beam data processing pipeline.
+
+3. Read from the local filesystem. Notice that globs ("*") are acceptable in the input filename. The output filesystem does not have to be local and can be, say, Google Big Query.
+
+4. The direct runner is hardcoded here for clarity, but it can and should be specified at run time.
+
+* I/O Transforms
+
+Beam can read from many different kinds of sources and write to various sinks.
+Below are the I/O transforms bundled with the go SDK.
+
+.image img/go-beam-io.png
+
+* Demo: Running hello beam
+
+  cd cmd/hello
+
+  go run main.go
+
+  cat output.csv
+
+output.csv:
+
+.code cmd/hello/output.csv
+
+* Cleaning data
+
+.code testdata/inventory.csv
+
+Let's use beam to remove header lines.
+
+One simple strategy is to accept lines containing strings that look like an ID and reject others.
+
+idRE=regexp.MustCompille('\w{3}\d{6}')
+
+
+* ParDo: Parallel Do
+
+main:
+
+.code cmd/clean/main.go /10/,/20/
+
+
+cleanFn:
+
+.code cmd/clean/main.go /30/,/40/
+
+* Demo: cleaning data
+
+Let us first run the code then explore how ParDo's work.
+
+	cd cmd/clean
+
+	go run main.go
+
+	cat output.csv
+
+output.csv:
+
+.code /cmd/clean/output.csv
+
+* cleanFn ParDo
+
+cleaned := beam.ParDo(s, cleanFN, lines)
+
+.code cmd/clean/main.go /30/,/40/
+
+From the docs:
+The function to use to process each element is specified by a DoFn, either as:
+a single function
+or
+a struct with methods, notably ProcessElement.
+The struct may also define Setup, StartBundle, FinishBundle and Teardown methods.
+
+* More from the docs
+
+ParDo is the core element-wise PTransform in Apache Beam, *invoking* a *user-specified*function* on each of the elements of the input PCollection to produce *zero*or*more*output*elements*, all of which are collected into the output PCollection
+
+When a ParDo transform is executed, the elements of the input PCollection are:
+
+1. first divided up into some number of "bundles". 
+
+2. These are farmed off to distributed worker machines
+(or run locally, if using the direct runner)
+
+* emit function
+
+The internal emit function allows generating zero or more outputs to be added to the PCollection.
+
+
+.code cmd/clean/main.go /30/,/40/
+
+emit is not a reserved word and can be anything meaningful eg. addToOutput
+
+* Emitting Key/Value pairs
+Apache beam's java SDK has a KV type.
+As far as I understand, in go and python KV pairs are simply pairs of values.
+
+.code cmd/keyval/main.go /10/,/20/ 
+
+csvFn: emits the pair (id string, rec []string). On error emits nothing.
+
+.code cmd/keyval/main.go /30/,/40/ 
+
+* Using Key/Value pairs
+
+main:
+
+.code cmd/keyval/main.go /10/,/20/
+
+csvFmtFn:
+
+.code cmd/keyval/main.go /50/,/60/ 
+
+csvFmtFn accepts pair (id string, rec []string) and always outputs one string per input pair.
+
+* Demo: Key/Value pairs
+
+  cd cmd/keyval
+
+  go run main.go
+
+  cat report.txt
+
+
+report.txt:
+
+.code cmd/keyval/report.txt
+
+* Getting the latest inventory count
+
+main:
+
+.code cmd/latest/main.go /10/,/20/
+
+1. DoFn defined inline as a go anonymous function / lambda.
+
+2. Let take a closer look at CombinePerKey
+
+
+* CombinePerKey -- reduce for each key in a Map/Reduce algorithm
+
+latestCountCombineFn:
+
+.code cmd/latest/main.go /30/,/40/
+
+* Demo Latest Inventory Count
+
+  cd cmd/latest
+
+  go run main.go
+
+  cat output.csv
+
+output.csv:
+
+.code cmd/latest/output.csv
+
+* Stream Processing
+
+* Event Time v. Processing Time
+
+Event time is the time which the event occurred. Eg the inventory count at 23 as at 2019-03-15T12:34:56 UTC.
+
+Processing time is the time which the record was process, this could be much later say 2019-06-28T00:00:00 UTC.
+
+textio.Read will assign the same event time to all elements in the file. This is not what we want.
+Instead we want to extract the timestamp from the data for use as the event time.
+
+.code cmd/evttime/main.go /10/,/20/
+
+Note we are passing a pointer to a struct instead of a function name.
+
+* Extracting and updating event time
+
+addTimestampFn:
+
+.code cmd/evttime/main.go /30/,/40/
+
+DoFn s can accept either a function or a struct method (shown above).
+
+* Format the output
+
+csvFmtFn:
+
+.code cmd/evttime/main.go /50/,/60/
+
+EventTime, if present, must always be placed before the input.
+
+EventTime is a millisecond precision timestamp since unix epoch.
+
+* Demo: Running the time-stamped PCollection
+
+  cd cmd/evttime
+
+  go run main.go
+
+  cat report.txt
+
+report.txt:
+
+.code cmd/evttime/report.txt
+
+* 30-day average inventory 
+
+testdata/marchToMay.csv:
+
+.code testdata/marchToMay.csv
+
+* main function
+main:
+
+.code cmd/avg/main.go /10/,/20/
+
+* meanFn
+meanFn:
+
+.code cmd/avg/main.go /30 OMIT/,/40 OMIT/
+
+
+Demo run:
+
+  cd cmd/avg
+  go run main.go
+
+* Results
+
+.code /cmd/avg/report.txt
+
+input:
+
+.code /testdata/marchToMay.csv
+
+
+
