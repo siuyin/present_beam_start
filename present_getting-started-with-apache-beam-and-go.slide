@@ -58,7 +58,13 @@ Get the go SDK:
 
   go get -u github.com/apache/beam/sdks/go/...
 
-* The following examples will use the direct runner.
+* WARNING: The Apache Beam SDK for Go is experimental. It is under heavy development. Production use is ill-advised.
+
+Having said that, the Go SDK to Beam is clean and easy to understand.
+
+The Google dataflow runner does have support for Go and is auto-scaling and serverless.
+
+Batch workflows are well support for Go but Streaming workflows are currently (June 2019) still only supported under java.
 
 * Hello Beam
 
