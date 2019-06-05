@@ -162,7 +162,7 @@ ParDo is the core element-wise PTransform in Apache Beam, *invoking* a *user-spe
 
 When a ParDo transform is executed, the elements of the input PCollection are:
 
-1. first divided up into some number of "bundles". 
+1. First divided up into some number of "bundles". 
 
 2. These are farmed off to distributed worker machines
 (or run locally, if using the direct runner)
@@ -219,7 +219,7 @@ main:
 
 1. DoFn defined inline as a go anonymous function / lambda.
 
-2. Let take a closer look at CombinePerKey
+2. Let's take a closer look at CombinePerKey
 
 
 * CombinePerKey -- reduce for each key in a Map/Reduce algorithm
