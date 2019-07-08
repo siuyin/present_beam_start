@@ -45,7 +45,7 @@ Dynamic or duck-typing is good here as it does not get in the way. You get to se
 
 Static typing is good here as the compiler can perform checks that correct types are passed around.
 
-- Go was designed as an pragmatic, easy to read, concise, statically typed language to address software engineering issues faced by Google.
+- Go was designed as a pragmatic, easy to read, concise, statically typed language to address software engineering issues faced by Google.
 
 * Go setup
 
