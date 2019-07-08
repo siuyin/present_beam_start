@@ -1,6 +1,6 @@
 Getting Started with Apache Beam
 and Go
-5 Jun 2019
+17 Jul 2019
 
 Loh Siu Yin
 Technology Consultant, Beyond Broadcast LLP
@@ -64,7 +64,7 @@ Having said that, the Go SDK to Beam is clean and easy to understand.
 
 The Google dataflow runner does have support for Go and is auto-scaling and serverless.
 
-Batch workflows are well support for Go but Streaming workflows are currently (June 2019) still only supported under java.
+*Batch* workflows are well supported for Go but Streaming workflows are currently (July 2019) still only supported under java.
 
 * Hello Beam
 
@@ -153,7 +153,7 @@ From the docs:
 The function to use to process each element is specified by a DoFn, either as:
 a single function
 or
-a struct with methods, notably ProcessElement.
+a struct with methods, notably *ProcessElement*.
 The struct may also define Setup, StartBundle, FinishBundle and Teardown methods.
 
 * More from the docs
@@ -176,6 +176,12 @@ The internal emit function allows generating zero or more outputs to be added to
 
 emit is not a reserved word and can be anything meaningful eg. addToOutput
 
+This DoFn function signature is:
+
+  func doFn(<inputs> , <emit func(outputs)>) {
+    emit <outputs>
+  }
+
 * Emitting Key/Value pairs
 Apache beam's java SDK has a KV type.
 From the Go SDK design docs, KV pairs are implicit and are just pairs of values.
@@ -192,7 +198,7 @@ main:
 
 .code cmd/keyval/main.go /10/,/20/
 
-csvFmtFn:
+csvFmtFn:  --- *note*: no emit function in the signature below!
 
 .code cmd/keyval/main.go /50/,/60/ 
 
@@ -253,7 +259,7 @@ Instead we want to extract the timestamp from the data for use as the event time
 
 .code cmd/evttime/main.go /10/,/20/
 
-Note we are passing a pointer to a struct instead of a function name.
+*Note*: we are passing a pointer to a struct instead of a function name.
 
 * Extracting and updating event time
 
@@ -263,6 +269,10 @@ addTimestampFn:
 
 DoFn s can accept either a function or a struct method (shown above).
 
+  mtime: "github.com/apache/beam/sdks/go/pkg/beam/core/graph/mtime"
+
+mtime: millisecond precision time. golang time.Time is nanosecond precision.
+
 * Format the output
 
 csvFmtFn:
@@ -270,8 +280,8 @@ csvFmtFn:
 .code cmd/evttime/main.go /50/,/60/
 
 EventTime, if present, must always be placed before the input.
-
 EventTime is a millisecond precision timestamp since unix epoch.
+
 
 * Demo: Running the time-stamped PCollection
 
