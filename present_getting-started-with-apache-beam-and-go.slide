@@ -250,7 +250,7 @@ output.csv:
 
 * Event Time v. Processing Time
 
-Event time is the time which the event occurred. Eg the inventory count at 23 as at 2019-03-15T12:34:56 UTC.
+Event time is the time which the event occurred. Eg the inventory count for X is 23 as at 2019-03-15T12:34:56 UTC.
 
 Processing time is the time which the record was process, this could be much later say 2019-06-28T00:00:00 UTC.
 

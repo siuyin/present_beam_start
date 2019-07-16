@@ -28,7 +28,7 @@ func main() {
 	cleaned := beam.ParDo(s, cleanFn, lines)
 	csvRecs := beam.ParDo(s, csvFn, cleaned)
 	stamped := beam.ParDo(s, &addTimestampFn{}, csvRecs)
-	monthWindow := beam.WindowInto(s, window.NewFixedWindows(24*30*time.Hour), stamped)
+	monthWindow := beam.WindowInto(s, window.NewFixedWindows(24*30*time.Hour), stamped) // HL
 	count := beam.ParDo(s, func(id string, rec []string, emit func(string, float32)) {
 		cnt, err := strconv.Atoi(rec[3])
 		if err != nil {
