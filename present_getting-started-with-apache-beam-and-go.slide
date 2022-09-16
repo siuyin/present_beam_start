@@ -10,8 +10,9 @@ siuyin@beyondbroadcast.com
 
 - A distributed data processing language (runs on one or more workers).
 - The same code can be used for batch or stream processing.
-- Runs on multiple targets: direct (local), apex, dataflow, gearpump, flink, samza, spark
-- java, scala, python and go SDKs 
+- Runs on multiple targets: direct (local), dataflow, flink, nemo, samza, spark
+- java, python and go SDKs 
+- SQL (java and python only)
 
 * Why Go as a data processing language?
 python:
@@ -59,9 +60,9 @@ Get the go SDK:
   go get -u github.com/apache/beam/sdks/v2/go/...
 
 
-The Google dataflow runner does have support for Go and is auto-scaling and serverless.
+The Google dataflow runner supports the Beam Go SDK is auto-scaling and serverless.
 
-*Batch* workflows are well supported for Go but Streaming workflows are currently (July 2019) still only supported under java.
+Batch and streaming workflows are well supported for Go since beam 2.33.
 
 * Hello Beam
 
