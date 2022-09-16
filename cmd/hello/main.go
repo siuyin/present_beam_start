@@ -5,11 +5,11 @@ import (
 	"log"
 
 	//10 OMIT
-	"github.com/apache/beam/sdks/go/pkg/beam"
-	"github.com/apache/beam/sdks/go/pkg/beam/io/textio"
-	"github.com/apache/beam/sdks/go/pkg/beam/runners/direct"
+	"github.com/apache/beam/sdks/v2/go/pkg/beam"
+	"github.com/apache/beam/sdks/v2/go/pkg/beam/io/textio"
+	"github.com/apache/beam/sdks/v2/go/pkg/beam/runners/direct"
 
-	_ "github.com/apache/beam/sdks/go/pkg/beam/io/filesystem/local" // (1)
+	_ "github.com/apache/beam/sdks/v2/go/pkg/beam/io/filesystem/local" // (1)
 	//20 OMIT
 )
 
@@ -20,7 +20,7 @@ func main() {
 	s := p.Root()
 	lines := textio.Read(s, "../../testdata/inventory*.csv") // (3)
 	textio.Write(s, "output.csv", lines)
-	if err := direct.Execute(context.Background(), p); err != nil { // (4)
+	if _, err := direct.Execute(context.Background(), p); err != nil { // (4)
 		log.Printf("pipeline execution error: %v", err)
 	}
 	//40 OMIT
