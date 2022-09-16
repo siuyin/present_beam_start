@@ -33,8 +33,7 @@ func main() {
 	avg := beam.CombinePerKey(s, meanFn, count)
 
 	formatted := beam.ParDo(s, fmtFn, avg)
-	// we need to merge, otherwise textio.Write will overwrite report.txt
-	// for each window
+	//textio.Write(s, "report.txt", formatted) // uncomment me to see what happens if we don't merge
 	merged := beam.WindowInto(s, window.NewGlobalWindows(), formatted)
 	textio.Write(s, "report.txt", merged)
 	//20 OMIT

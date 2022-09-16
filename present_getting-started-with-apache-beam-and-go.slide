@@ -304,6 +304,8 @@ main:
 
 .code cmd/avg/main.go /10/,/20/
 
+.code cmd/avg/main.go /^func aToIFn/,/^}/
+
 * meanFn
 meanFn:
 
