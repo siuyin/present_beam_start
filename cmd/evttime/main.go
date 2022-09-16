@@ -9,12 +9,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/apache/beam/sdks/go/pkg/beam"
-	"github.com/apache/beam/sdks/go/pkg/beam/core/graph/mtime"
-	"github.com/apache/beam/sdks/go/pkg/beam/io/textio"
-	"github.com/apache/beam/sdks/go/pkg/beam/runners/direct"
+	"github.com/apache/beam/sdks/v2/go/pkg/beam"
+	"github.com/apache/beam/sdks/v2/go/pkg/beam/core/graph/mtime"
+	"github.com/apache/beam/sdks/v2/go/pkg/beam/io/textio"
+	"github.com/apache/beam/sdks/v2/go/pkg/beam/runners/direct"
 
-	_ "github.com/apache/beam/sdks/go/pkg/beam/io/filesystem/local"
+	_ "github.com/apache/beam/sdks/v2/go/pkg/beam/io/filesystem/local"
 )
 
 func main() {
@@ -29,7 +29,7 @@ func main() {
 	formatted := beam.ParDo(s, csvFmtFn, stamped)
 	textio.Write(s, "report.txt", formatted)
 	//20 OMIT
-	if err := direct.Execute(context.Background(), p); err != nil {
+	if _, err := direct.Execute(context.Background(), p); err != nil {
 		log.Printf("pipeline execution error: %v", err)
 	}
 }
