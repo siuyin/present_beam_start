@@ -29,13 +29,7 @@ func main() {
 	csvRecs := beam.ParDo(s, csvFn, cleaned)
 	stamped := beam.ParDo(s, &addTimestampFn{}, csvRecs)
 	monthWindow := beam.WindowInto(s, window.NewFixedWindows(24*30*time.Hour), stamped) // HL
-	count := beam.ParDo(s, func(id string, rec []string, emit func(string, float32)) {
-		cnt, err := strconv.Atoi(rec[3])
-		if err != nil {
-			return
-		}
-		emit(id, float32(cnt))
-	}, monthWindow)
+	count := beam.ParDo(s, aToIFn, monthWindow)
 	avg := beam.CombinePerKey(s, meanFn, count)
 
 	formatted := beam.ParDo(s, fmtFn, avg)
@@ -86,4 +80,12 @@ func cleanFn(line string, emit func(string)) {
 		return
 	}
 	emit(line)
+}
+
+func aToIFn(id string, rec []string, emit func(string, float32)) {
+	cnt, err := strconv.Atoi(rec[3])
+	if err != nil {
+		return
+	}
+	emit(id, float32(cnt))
 }
