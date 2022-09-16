@@ -49,18 +49,15 @@ Static typing is good here as the compiler can perform checks that correct types
 
 * Go setup
 
-The Beam SDK for Go requires go version 1.10 or newer.
+The Beam SDK for Go requires go version 1.18 or newer.
 Check with:
 
   go version
 
 Get the go SDK:
 
-  go get -u github.com/apache/beam/sdks/go/...
+  go get -u github.com/apache/beam/sdks/v2/go/...
 
-* WARNING: The Apache Beam SDK for Go is experimental. It is under heavy development. Production use is ill-advised.
-
-Having said that, the Go SDK to Beam is clean and easy to understand.
 
 The Google dataflow runner does have support for Go and is auto-scaling and serverless.
 
