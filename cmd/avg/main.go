@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/csv"
+	"flag"
 	"fmt"
 	"log"
 	"regexp"
@@ -14,12 +15,13 @@ import (
 	"github.com/apache/beam/sdks/v2/go/pkg/beam/core/graph/mtime"
 	"github.com/apache/beam/sdks/v2/go/pkg/beam/core/graph/window"
 	"github.com/apache/beam/sdks/v2/go/pkg/beam/io/textio"
-	"github.com/apache/beam/sdks/v2/go/pkg/beam/runners/direct"
+	"github.com/apache/beam/sdks/v2/go/pkg/beam/x/beamx"
 
 	_ "github.com/apache/beam/sdks/v2/go/pkg/beam/io/filesystem/local"
 )
 
 func main() {
+	flag.Parse()
 	beam.Init()
 	p := beam.NewPipeline()
 	s := p.Root()
@@ -37,7 +39,9 @@ func main() {
 	merged := beam.WindowInto(s, window.NewGlobalWindows(), formatted)
 	textio.Write(s, "report.txt", merged)
 	//20 OMIT
-	if _, err := direct.Execute(context.Background(), p); err != nil {
+	//if _, err := direct.Execute(context.Background(), p); err != nil {
+	//if _, err := flink.Execute(context.Background(), p); err != nil {
+	if err := beamx.Run(context.Background(), p); err != nil {
 		log.Printf("pipeline execution error: %v", err)
 	}
 }

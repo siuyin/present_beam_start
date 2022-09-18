@@ -1,4 +1,5 @@
 *.swp
+*junk*
 *secret*
 **/avg/avg
 **/avgrandom/avgrandom
@@ -8,4 +9,7 @@
 **/hello/hello
 **/keyval/keyval
 **/latest/latest
+
+cmd/windowed_wordcount/windowed_wordcount
+cmd/wordcount/wordcount
 
